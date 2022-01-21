@@ -11,7 +11,6 @@ const Leaderboard = () => {
         axios
             .get('http://localhost:3000/users/leaderboard')
             .then(response => {
-                console.log(response.data.users);
                 setLeaderboardData(response.data.users.filter(user => !(!user.score && user.score !== 0)));
             });
       }, []);

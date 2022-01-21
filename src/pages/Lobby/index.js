@@ -26,8 +26,6 @@ const Lobby = () => {
     const [ ModalInvalidLobby, openModalInvalidLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
     const [ ModalFullLobby, openModalFullLobby ] = useModal('root', { preventScroll: true, closeOnOverlayClick: false });
 
-    console.log(messages);
-
     const joinRoom = (socket) => {
         // make a socket room if host
         if (isHost === 'true') { 
@@ -35,7 +33,6 @@ const Lobby = () => {
             if (category === 8) {
                 categoryId = randomNumBetween(9, 32);
             }
-            console.log("category id:" + categoryId);
             // send event to create the lobby
             socket.emit("create-lobby", { username: name, numOfQuestions: numOfQuestions, categoryId: categoryId, difficulty: difficulty, roundLimit: roundLimit });
             // on lobby created event
@@ -46,14 +43,12 @@ const Lobby = () => {
                 setMessages(messages => [ `Lobby created by ${host.username}`, ...messages ]);
                 setPlayers(players => [ ...players, host ]);
                 setCurrentPlayer(host);
-                console.log(`Lobby ${host.lobby_id} created by ${host.username}`);
             });
         // otherwise, join a pre-existing socket room    
         } else {
             socket.emit("request-join-lobby", { username: name, lobbyId: lobbyId });
 
             socket.on("entry-permission", ({ lobbyId, existingPlayers, newPlayer }) => {
-                console.log(newPlayer);
                 setPlayers([ ...existingPlayers ]);
                 setPlayerId(newPlayer.id);
                 setCurrentPlayer(newPlayer);
@@ -94,7 +89,6 @@ const Lobby = () => {
         // choose new host if they have left
         socket.on("host-left", ({ newHost }) => {
             setMessages(messages => [`Host left`, ...messages]);
-            console.log(newHost);
             setNewHost(newHost);
         });
 
@@ -134,7 +128,6 @@ const Lobby = () => {
     }
 
     const leaveLobby = (socket) => {
-        console.log(lobbyId)
         setPlayers(players => players.filter(p => p.id !== currentPlayer.id));
         socket.emit("leave-lobby", ({ lobbyId: lobbyId , player: currentPlayer, isHost: isHost }));
         navigate('/');

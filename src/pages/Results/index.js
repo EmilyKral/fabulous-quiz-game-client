@@ -9,11 +9,8 @@ const Results = () => {
     const location = useLocation();
     const lobbyId = location.state.lobbyId;
     const numOfQuestions = location.state.rounds;
-    console.log(results);
-    console.log(lobbyId);
 
     useEffect(() => {
-        console.log(lobbyId);
         axios
             .get(`http://localhost:3000/users/${lobbyId}`)
             .then(response => {
